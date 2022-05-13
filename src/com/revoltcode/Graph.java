@@ -107,26 +107,53 @@ public class Graph {
         dFSRecursiveUtil(startingVertex, visitedNodes);
     }
 
-    public static void main(String[] args){
-        Graph g = new Graph(4);
+    public boolean depthFirstSearchHasPath(int startingVertex, int destinationVertex){
 
-        g.addEdge(0, 1);
-        g.addEdge(0, 2);
-        g.addEdge(1, 2);
-        g.addEdge(2, 0);
-        g.addEdge(2, 3);
-        g.addEdge(3, 3);
+        boolean[] visitedNodes = new boolean[this.numberOfVertexes];
+        Stack<Integer> stack = new Stack<>();
+
+        stack.push(startingVertex);
+        visitedNodes[startingVertex] = true;
+
+        while(stack.size() > 0){
+            int currentVertex = stack.pop();
+
+            if(currentVertex == destinationVertex) return true;
+
+            ListIterator<Integer> iterator = adjacencyList[currentVertex].listIterator();
+
+            while(iterator.hasNext()) {
+                int neighbourVertex = iterator.next();
+
+                if(!visitedNodes[neighbourVertex]) {
+                    stack.push(neighbourVertex);
+                    visitedNodes[neighbourVertex] = true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public static void main(String[] args){
+        Graph graph = new Graph(4);
+
+        graph.addEdge(0, 1);
+        graph.addEdge(0, 2);
+        graph.addEdge(1, 2);
+        graph.addEdge(2, 0);
+        graph.addEdge(2, 3);
+        graph.addEdge(3, 3);
 
         System.out.println("Breadth First Traversal");
-
-        g.breadthFirstSearch(0);
+        graph.breadthFirstSearch(0);
 
         System.out.println("Depth First Traversal");
-
-        g.depthFirstSearch(2);
+        graph.depthFirstSearch(2);
 
         System.out.println("Depth First Traversal (Recursively)");
+        graph.depthFirstSearchRecursively(2);
 
-        g.depthFirstSearchRecursively(2);
+        System.out.println("Depth First Traversal (hasPath)");
+        System.out.println(graph.depthFirstSearchHasPath(2,1));
     }
 }
